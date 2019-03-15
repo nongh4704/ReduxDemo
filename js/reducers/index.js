@@ -12,7 +12,12 @@ function todo(state = [],action){
     switch(action.type){
         case ADD_TODO: {
             if(nextState){
-                nextState.push(atcion.data);
+                let newItem = {
+                    id: nextState[nextState.length-1].id+1,
+                    ischecked: false,
+                    content: action.content
+                };
+                nextState.push(newItem);
             }
             return nextState;
         };

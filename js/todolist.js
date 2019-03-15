@@ -2,22 +2,61 @@ import React,{Component} from "react";
 import {
     View,
     StyleSheet,
+    Alert,
     TextInput,
     TouchableOpacity,
     Text,
     FlatList
 } from "react-native";
 import {connect} from "react-redux";
+import {checkTodo, deleteTodo} from "./actions/index";
 
 class TodoList extends Component{
     constructor(props){
         super(props);
     }
 
+    onItemPress = (item, index) => {
+        this.props.dispatch(checkTodo(index));
+    }
+
+    onItemLongPress = (item, index) => {
+        Alert.alert(
+            "删除项目",
+            "确认要删除该项目吗?",
+            [
+                {text: "取消"},
+                {text: "确认", onPress: () => this.props.dispatch(deleteTodo(index))}
+            ]
+        );
+    }
+
+    renderItem = ({item, index}) => {
+        let color = "#333";
+        if(item.ischecked){
+            color = "#ccc";
+        }
+        <TouchableOpacity  
+            onPress = {_ => this.onItemPress(item, index)}
+            onLongPress = {_ => this.onItemLongPress(item, index)}
+            style = {styles.item}>
+            <View style = {styles.dot}/>
+            <Text style = {[styles.item_content,{color, textDecoration: item.ischecked ? "line-through" : "none"}]}>{item.content}</Text>
+        </TouchableOpacity>
+    }
+
+    renderSeparator = () => {
+        return(
+            <View style = {styles.separator}/>
+        )
+    }
+
     render(){
         <FlatList
             data = {this.props.todoList}
-            />
+            keyExtractor = {item => item.id+""}
+            ItemSeparatorComponent = {this.renderSeparator}
+            renderItem = {this.renderItem}/>
     }
 }
 
@@ -55,5 +94,26 @@ const styles = StyleSheet.create({
     },
     input_submit_text: {
         color: "#fff"
+    },
+    dot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: "green"
+    },
+    item: {
+        flexDirection: "row",
+        height: 40,
+        alignItems: "center",
+        paddingHorizontal: 15
+    },
+    item_content: {
+        flex: 1,
+        marginLeft:10
+    },
+    separator: {
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: "#ebebeb",
+        marginLeft: 15
     }
 })
