@@ -7,58 +7,77 @@ import {
     Text
 } from "react-native";
 import {connect} from "react-redux";
-import { addTodo } from "./actions";
+import { addTodo, addingTodo } from "./actions";
+import TodoList from "./todolist";
 
 class Todo extends Component{
     constructor(props){
         super(props);
     }
 
-    onChangeText = (text) => {
-        this.text = text;
-    }
-
     onSubmit = () => {
-        if(this.text){
-            this.props.dispatch(addTodo(this.text))
+        if(this.props.addingTodo){
+            this.props.dispatch(addTodo(this.props.addingTodo));
+            this.props.dispatch(addingTodo(""));
         }
     }
 
     render(){
-        <View style = {styles.container}>
-            <View style = {styles.input}>
-                <TextInput 
-                    onChangeText = {this.onChangeText}
-                    style = {styles.input_input}/>
-                <TouchableOpacity onPress = {_ => this.onSubmit()} style = {styles.input_submit}><Text style = {styles.input_submit_text}>确定</Text></TouchableOpacity>
+        return(
+            <View style = {styles.container}>
+                <View style = {styles.input}>
+                    <View style = {styles.input_border}>
+                        <TextInput
+                            value = {this.props.addingTodo}
+                            onChangeText = {text => this.props.dispatch(addingTodo(text))}
+                            style = {styles.input_input}/>
+                    </View>
+                    <TouchableOpacity onPress = {_ => this.onSubmit()} style = {styles.input_submit}><Text style = {styles.input_submit_text}>确定</Text></TouchableOpacity>
+                </View>
+                <TodoList/>
             </View>
-            <TodoList/>
-        </View>
+        )
     }
 }
 
-export default connect()(Todo)
+function mapStateToProps(state){
+    return {
+        addingTodo: state.addingTodo
+    }
+}
+
+export default connect(mapStateToProps)(Todo)
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "#fff"
     },
     input: {
         height: 44,
         paddingHorizontal: 15,
         flexDirection: "row",
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 20
+    },
+    input_border: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "#ccc",
+        borderRadius: 4,
+        flex: 1,
+        overflow: "hidden"
     },
     input_input: {
         height: 44,
-        flex: 1,
         paddingVertical:2,
+        paddingHorizontal:10,
         textAlignVertical: "center",
         marginRight: 10
     },
     input_submit: {
         height: 44,
         width: 80,
+        marginLeft: 10,
         backgroundColor: "green",
         borderRadius: 6,
         justifyContent: "center",

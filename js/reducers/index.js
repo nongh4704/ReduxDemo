@@ -3,11 +3,12 @@
 import {
     DELETE_TODO,
     ADD_TODO,
-    CHECK_TODO
+    CHECK_TODO,
+    ADDING_TODO
 } from "../actions/index";
 import {combineReducers} from "redux";
 
-function todo(state = [],action){
+function todoList(state = [],action){
     let nextState = state.slice();
     switch(action.type){
         case ADD_TODO: {
@@ -22,17 +23,28 @@ function todo(state = [],action){
             return nextState;
         };
         case DELETE_TODO : {
-            nextState = nextState.splice(index,1);
+            nextState.splice(action.index,1);
             return nextState;
         };
         case CHECK_TODO: {
-            if(nextState[index]) nextState[index].ischecked = !nextState[index].ischecked;
+            if(nextState[action.index]) nextState[action.index].ischecked = !nextState[action.index].ischecked;
             return nextState;
         }
         default: return state;
     }
 }
 
-export const reducers = combineReducers({
-    todo
+function addingTodo(state = "", action){
+    if(action.type == ADDING_TODO){
+        return action.content;
+    }else{
+        return state;
+    }
+}
+
+const reducers = combineReducers({
+    todoList,
+    addingTodo
 });
+
+export default reducers;

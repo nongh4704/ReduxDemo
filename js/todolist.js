@@ -34,15 +34,18 @@ class TodoList extends Component{
     renderItem = ({item, index}) => {
         let color = "#333";
         if(item.ischecked){
-            color = "#ccc";
+            color = "#999";
         }
-        <TouchableOpacity  
-            onPress = {_ => this.onItemPress(item, index)}
-            onLongPress = {_ => this.onItemLongPress(item, index)}
-            style = {styles.item}>
-            <View style = {styles.dot}/>
-            <Text style = {[styles.item_content,{color, textDecoration: item.ischecked ? "line-through" : "none"}]}>{item.content}</Text>
-        </TouchableOpacity>
+        
+        return(
+            <TouchableOpacity  
+                onPress = {_ => this.onItemPress(item, index)}
+                onLongPress = {_ => this.onItemLongPress(item, index)}
+                style = {styles.item}>
+                <View style = {styles.dot}/>
+                <Text style = {[styles.item_content,{color, textDecorationLine: item.ischecked ? "line-through" : "none"}]}>{item.content}</Text>
+            </TouchableOpacity>
+        )
     }
 
     renderSeparator = () => {
@@ -52,11 +55,14 @@ class TodoList extends Component{
     }
 
     render(){
-        <FlatList
-            data = {this.props.todoList}
-            keyExtractor = {item => item.id+""}
-            ItemSeparatorComponent = {this.renderSeparator}
-            renderItem = {this.renderItem}/>
+        return (
+            <FlatList
+                style = {{flex: 1}}
+                data = {this.props.todoList}
+                keyExtractor = {item => item.id+""}
+                ItemSeparatorComponent = {this.renderSeparator}
+                renderItem = {this.renderItem}/>
+        )
     }
 }
 
